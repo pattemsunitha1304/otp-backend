@@ -1,16 +1,16 @@
 const express = require("express");
 const app = express();
-const PORT = process.env.PORT || 3000;
 
+// Middleware
 app.use(express.json());
 
+// Root route (test server)
 app.get("/", (req, res) => {
   res.send("API Running");
 });
 
-app.post("/send-otp", (req, res) => {
-  const { mobile } = req.body;
-
+// 🔥 Test route (VERY IMPORTANT)
+app.get("/test-otp", (req, res) => {
   res.json({
     success: true,
     message: "OTP sent",
@@ -18,4 +18,33 @@ app.post("/send-otp", (req, res) => {
   });
 });
 
-app.listen(PORT, "0.0.0.0", () => console.log(`Server started on port ${PORT}`));
+// OTP API (POST)
+app.post("/send-otp", (req, res) => {
+  const { mobile } = req.body;
+
+  // Validate mobile
+  if (!mobile) {
+    return res.status(400).json({
+      success: false,
+      message: "Mobile number is required"
+    });
+  }
+
+  console.log("OTP request for:", mobile);
+
+  // Dummy OTP
+  const otp = "123456";
+
+  res.json({
+    success: true,
+    message: "OTP sent successfully",
+    otp: otp
+  });
+});
+
+// Start server (Railway needs process.env.PORT)
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
